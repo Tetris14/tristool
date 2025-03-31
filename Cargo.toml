@@ -1,7 +1,11 @@
 [package]
 name = "tristool"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
+authors = ["Tristan gory"]
+description = "A tool to create and manage projects."
+license = "MIT"
+repository = "https://github.com/Tetris14/tristool"
 
 [dependencies]
 clap = "4.5.34"
