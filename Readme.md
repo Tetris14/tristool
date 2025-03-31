@@ -7,6 +7,7 @@ Tristool is a command-line interface (CLI) tool designed to streamline the proce
 - Next.js
 - Nest.js
 - Expo
+- Rust
 
 ## Features
 
