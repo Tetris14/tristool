@@ -41,8 +41,6 @@ pub fn list_projects() {
     let project_list: ProjectList =
         serde_json::from_str(&data).expect("Failed to parse JSON data.");
 
-    println!("Projects stored in tristool:");
-
     for project in project_list.projects {
         let stack_display = match project.stack.as_str() {
             "NestJS" => style(&project.stack).cyan().to_string(),
@@ -53,10 +51,14 @@ pub fn list_projects() {
             "C++" => style(&project.stack).magenta().to_string(),
             _ => style(&project.stack).white().to_string(),
         };
+        let name = style("Name:").yellow().to_string();
+        let path = style("Path:").blue().to_string();
+        let date = style("Date:").green().to_string();
 
         println!(
-            "Name: {}, Path: {}, Date: {}, Stack: {}",
-            project.name, project.path, project.date, stack_display
+            "{} {}, {} {}, {} {}, Stack: {}",
+            name, project.name, path, project.path, date, project.date, stack_display
         );
+        println!();
     }
 }

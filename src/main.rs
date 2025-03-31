@@ -94,7 +94,7 @@ fn main() {
             project_stack,
         );
     } else if command == "list" {
-        println!("Listing all projects...");
+        println!();
         list_projects();
     } else {
         println!("Unknown command: {}", command);
