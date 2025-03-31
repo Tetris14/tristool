@@ -1,8 +1,10 @@
+mod git;
 mod stacks;
 
 use clap::{Arg, Command};
 use console::style;
 use dialoguer::{Select, theme::ColorfulTheme};
+use git::create_git_repo::create_git_repo;
 use stacks::create_c::create_c;
 use stacks::create_cpp::create_cpp;
 use stacks::create_expo::create_expo;
@@ -62,6 +64,7 @@ fn main() {
             5 => create_cpp(project_name),
             _ => println!("Invalid selection"),
         }
+        create_git_repo(project_name);
     } else {
         println!("Unknown command: {}", command);
     }
