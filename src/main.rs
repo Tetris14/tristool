@@ -1,5 +1,6 @@
 mod git;
 mod stacks;
+mod utils;
 
 use clap::{Arg, Command};
 use console::style;
@@ -11,6 +12,8 @@ use stacks::create_expo::create_expo;
 use stacks::create_nestjs::create_nestjs;
 use stacks::create_nextjs::create_nextjs;
 use stacks::create_rust::create_rust;
+use utils::list_projects::list_projects;
+use utils::project_manager::save_project;
 
 fn main() {
     let matches = Command::new("tristool")
@@ -33,6 +36,7 @@ fn main() {
 
     let command = matches.get_one::<String>("command").unwrap();
     if command == "new" {
+        let mut project_stack = "Default";
         println!("Creating a new project...");
         let mut project_name = "project-created-by-tristool";
         if let Some(name) = matches.get_one::<String>("name") {
@@ -56,15 +60,42 @@ fn main() {
             .unwrap();
 
         match selection {
-            0 => create_nestjs(project_name),
-            1 => create_nextjs(project_name),
-            2 => create_expo(project_name),
-            3 => create_rust(project_name),
-            4 => create_c(project_name),
-            5 => create_cpp(project_name),
+            0 => {
+                project_stack = "NestJS";
+                create_nestjs(project_name);
+            }
+            1 => {
+                project_stack = "NextJS";
+                create_nextjs(project_name);
+            }
+            2 => {
+                project_stack = "React Native with Expo";
+                create_expo(project_name);
+            }
+            3 => {
+                project_stack = "Rust";
+                create_rust(project_name);
+            }
+            4 => {
+                project_stack = "C";
+                create_c(project_name);
+            }
+            5 => {
+                project_stack = "C++";
+                create_cpp(project_name);
+            }
             _ => println!("Invalid selection"),
         }
         create_git_repo(project_name);
+        let project_path = std::fs::canonicalize(project_name).unwrap();
+        save_project(
+            project_name,
+            &project_path.display().to_string(),
+            project_stack,
+        );
+    } else if command == "list" {
+        println!("Listing all projects...");
+        list_projects();
     } else {
         println!("Unknown command: {}", command);
     }
