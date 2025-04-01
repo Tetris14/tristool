@@ -18,7 +18,7 @@ use utils::project_manager::save_project;
 
 fn main() {
     let matches = Command::new("tristool")
-        .version("1.0.0")
+        .version("1.1.0")
         .author("Tristan Gory <tristan@example.com>")
         .about("A simple CLI tool")
         .arg(
