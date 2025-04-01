@@ -12,6 +12,7 @@ use stacks::create_expo::create_expo;
 use stacks::create_nestjs::create_nestjs;
 use stacks::create_nextjs::create_nextjs;
 use stacks::create_rust::create_rust;
+use utils::list_projects::get_storage_path;
 use utils::list_projects::list_projects;
 use utils::project_manager::save_project;
 
@@ -36,6 +37,7 @@ fn main() {
 
     let command = matches.get_one::<String>("command").unwrap();
     if command == "new" {
+        println!();
         let mut project_stack = "Default";
         println!("Creating a new project...");
         let mut project_name = "project-created-by-tristool";
@@ -93,9 +95,52 @@ fn main() {
             &project_path.display().to_string(),
             project_stack,
         );
+        println!();
     } else if command == "list" {
         println!();
         list_projects();
+        println!();
+    } else if command == "rm" {
+        println!();
+        println!("Removing a project...");
+        let mut project_name = "project-created-by-tristool";
+        if let Some(name) = matches.get_one::<String>("name") {
+            println!("Project name: {}", name);
+            project_name = name;
+        }
+        let storage_path = get_storage_path();
+        let projects: Vec<serde_json::Value> = if storage_path.exists() {
+            let file = std::fs::File::open(&storage_path).unwrap();
+            serde_json::from_reader(file).unwrap_or_else(|_| vec![])
+        } else {
+            vec![]
+        };
+
+        let updated_projects: Vec<_> = projects
+            .into_iter()
+            .filter(|project| project["name"] != project_name)
+            .collect();
+
+        let file = std::fs::File::create(&storage_path).unwrap();
+        serde_json::to_writer_pretty(file, &updated_projects).unwrap();
+
+        let project_path = std::path::Path::new(&project_name);
+        if project_path.exists() {
+            std::fs::remove_dir_all(project_path).unwrap();
+            println!("Project '{}' has been removed.", project_name);
+        } else {
+            println!("Project '{}' does not exist.", project_name);
+        }
+
+        if storage_path.exists() {
+            let file = std::fs::File::open(&storage_path).unwrap();
+            let mut projects: Vec<serde_json::Value> =
+                serde_json::from_reader(file).unwrap_or_else(|_| vec![]);
+            projects.retain(|project| project["name"] != project_name);
+            let file = std::fs::File::create(&storage_path).unwrap();
+            serde_json::to_writer_pretty(file, &projects).unwrap();
+        }
+        println!();
     } else {
         println!("Unknown command: {}", command);
     }

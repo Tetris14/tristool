@@ -18,7 +18,7 @@ struct ProjectList {
     projects: Vec<Project>,
 }
 
-fn get_storage_path() -> PathBuf {
+pub fn get_storage_path() -> PathBuf {
     let mut path = home_dir().unwrap();
     path.push(".tristool");
     path.push("projects.json");
@@ -34,6 +34,10 @@ pub fn list_projects() {
     }
 
     let mut file = File::open(&file_path).expect("Failed to open projects.json file.");
+    if file.metadata().unwrap().len() == 2 {
+        println!("No projects found. The projects.json file is empty.");
+        return;
+    }
     let mut data = String::new();
     file.read_to_string(&mut data)
         .expect("Failed to read projects.json file.");
@@ -59,6 +63,5 @@ pub fn list_projects() {
             "{} {}, {} {}, {} {}, Stack: {}",
             name, project.name, path, project.path, date, project.date, stack_display
         );
-        println!();
     }
 }
